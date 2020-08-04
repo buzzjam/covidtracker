@@ -6,11 +6,11 @@ export default (state, action) => {
         loading: false,
         fetchedData: action.payload,
       };
-    case "FETCH_DATA":
+    case "FETCH_DAILYDATA":
       return {
         ...state,
         loading: false,
-        fetchedData: action.payload,
+        dailyData: action.payload,
       };
     case "DATA_ERROR":
       return {

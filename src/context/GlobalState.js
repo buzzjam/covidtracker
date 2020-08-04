@@ -52,7 +52,7 @@ export const GlobalProvider = ({ children }) => {
       console.log("daily data", data)
 
       dispatch({
-        type: "FETCH_DATE",
+        type: "FETCH_DAILYDATA",
         payload: data,
       });
     } catch (err) {
