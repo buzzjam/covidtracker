@@ -1,25 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Cards, Chart, Country } from "./components";
+import styles from "./App.module.css";
+import { GlobalProvider, GlobalContext } from "./context/GlobalState";
 
 function App() {
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <GlobalProvider>
+      <div className={styles.container}>
+        <Cards />
+        <Country />
+        <Chart />
+      </div>
+    </GlobalProvider>
   );
 }
 
