@@ -1,7 +1,7 @@
 import React from "react";
 import { Cards, Chart, Country } from "./components";
 import styles from "./App.module.css";
-import { GlobalProvider, GlobalContext } from "./context/GlobalState";
+import { GlobalProvider } from "./context/GlobalState";
 
 function App() {
 

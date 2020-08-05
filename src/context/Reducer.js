@@ -12,6 +12,12 @@ export default (state, action) => {
         loading: false,
         dailyData: action.payload,
       };
+    case "FETCH_COUNTRYDATA":
+      return {
+        ...state,
+        loading: false,
+        countryData: action.payload,
+      };
     case "DATA_ERROR":
       return {
         ...state,

@@ -9,7 +9,8 @@ const initialState = {
   error: null,
   loading: true,
   fetchedData: false,
-  dailyData: false,
+  dailyData: [],
+  countryData: [],
   
 };
 
@@ -49,11 +50,31 @@ export const GlobalProvider = ({ children }) => {
     try {
       const { data } = await axios.get(`${url}/daily`);
 
-      console.log("daily data", data)
+      const moddedData = data.map((dailyData) => ({
+        confirmed: dailyData.confirmed.total,
+        deaths: dailyData.deaths.total,
+        date: dailyData.reportDate
+      }))
 
       dispatch({
         type: "FETCH_DAILYDATA",
-        payload: data,
+        payload: moddedData,
+      });
+    } catch (err) {
+      dispatch({
+        type: "DATA_ERROR",
+        payload: err.response.data.error,
+      });
+    }
+  };
+
+  const fetchCountries = async () => {
+    try {
+      const { data: {countries}  } = await axios.get(`${url}/countries`);
+      
+      dispatch({
+        type: "FETCH_COUNTRYDATA",
+        payload: countries.map(country => country.name),
       });
     } catch (err) {
       dispatch({
@@ -68,10 +89,12 @@ export const GlobalProvider = ({ children }) => {
       value={{
         fetchedData: state.fetchedData,
         dailyData: state.dailyData,
+        countryData: state.countryData,
         loading: state.loading,
         error: state.error,
         fetchData,
         fetchDailyData,
+        fetchCountries,
       }}
     >
       {children}
