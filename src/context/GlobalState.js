@@ -2,30 +2,32 @@ import React, { createContext, useReducer } from "react";
 import axios from "axios";
 import Reducer from "./Reducer";
 
-const url = "https://covid19.mathdro.id/api";
+const Url = "https://covid19.mathdro.id/api";
 
 //initial state
 const initialState = {
   error: null,
   loading: true,
-  fetchedData: false,
+  fetchedData: {},
   dailyData: [],
   countryData: [],
-  
+  country: "",
 };
 
-//context
+//create context
 export const GlobalContext = createContext(initialState);
 
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(Reducer, initialState);
 
   //functions
-  const fetchData = async () => {
+  const fetchData = async (country) => {
+    let adaptiveUrl = country ? `${Url}/countries/${country}` : Url;
+
     try {
       const {
         data: { confirmed, recovered, deaths, lastUpdate },
-      } = await axios.get(url);
+      } = await axios.get(adaptiveUrl);
 
       const moddedData = {
         confirmed,
@@ -48,13 +50,13 @@ export const GlobalProvider = ({ children }) => {
 
   const fetchDailyData = async () => {
     try {
-      const { data } = await axios.get(`${url}/daily`);
+      const { data } = await axios.get(`${Url}/daily`);
 
       const moddedData = data.map((dailyData) => ({
         confirmed: dailyData.confirmed.total,
         deaths: dailyData.deaths.total,
-        date: dailyData.reportDate
-      }))
+        date: dailyData.reportDate,
+      }));
 
       dispatch({
         type: "FETCH_DAILYDATA",
@@ -70,11 +72,30 @@ export const GlobalProvider = ({ children }) => {
 
   const fetchCountries = async () => {
     try {
-      const { data: {countries}  } = await axios.get(`${url}/countries`);
-      
+      const {
+        data: { countries },
+      } = await axios.get(`${Url}/countries`);
+
       dispatch({
         type: "FETCH_COUNTRYDATA",
-        payload: countries.map(country => country.name),
+        payload: countries.map((country) => country.name),
+      });
+    } catch (err) {
+      dispatch({
+        type: "DATA_ERROR",
+        payload: err.response.data.error,
+      });
+    }
+  };
+
+  const changeCountry = async (country) => {
+    let countryWithCheckForGlobal = (country === "global") ? "" : country
+
+    try {
+      fetchData(country);
+      dispatch({
+        type: "CHANGE_COUNTRY",
+        payload: countryWithCheckForGlobal,
       });
     } catch (err) {
       dispatch({
@@ -89,12 +110,14 @@ export const GlobalProvider = ({ children }) => {
       value={{
         fetchedData: state.fetchedData,
         dailyData: state.dailyData,
+        country: state.country,
         countryData: state.countryData,
         loading: state.loading,
         error: state.error,
         fetchData,
         fetchDailyData,
         fetchCountries,
+        changeCountry,
       }}
     >
       {children}

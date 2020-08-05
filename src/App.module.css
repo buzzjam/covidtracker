@@ -8,3 +8,8 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.image {
+  margin-top: 3%;
+  width: 200px;
+}

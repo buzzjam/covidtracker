@@ -1,11 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { GlobalContext } from "../../context/GlobalState";
+import CountUp from "react-countup";
 import { Card, CardContent, Typography, Grid } from "@material-ui/core";
 import styles from "./Cards.module.css";
 import { css } from "@emotion/core";
 import PuffLoader from "react-spinners/PuffLoader";
-import CountUp from "react-countup";
 import cx from "classnames";
+import CardCompenent from "./CardCompenent";
 
 const override = css`
   display: block;
@@ -20,90 +21,46 @@ const Cards = () => {
     fetchData();
   }, []);
 
-  if (!fetchedData) {
+  if (Object.keys(fetchedData).length === 0) {
     return <PuffLoader css={override} size={100} color={"#123abc"} />;
   }
+
+  const activeValue =
+    fetchedData.confirmed.value -
+    fetchedData.recovered.value -
+    fetchedData.deaths.value;
 
   return (
     <div className={styles.container}>
       <Grid container spacing={3} justify="center">
-        <Grid
-          item
-          component={Card}
-          xs={12}
-          md={3}
-          className={cx(styles.card, styles.infected)}
-        >
-          <CardContent>
-            <Typography color="textSecondary" gutterBottom>
-              Infected
-            </Typography>
-            <Typography variant="h5">
-              <CountUp
-                start={0}
-                end={fetchedData.confirmed.value}
-                duration={3}
-                separator=","
-              />
-            </Typography>
-            <Typography color="textSecondary">
-              {new Date(fetchedData.lastUpdate).toDateString()}
-            </Typography>
-            <Typography variant="body2">Active COVID cases</Typography>
-          </CardContent>
-        </Grid>
-        <Grid
-          item
-          component={Card}
-          xs={12}
-          md={3}
-          className={cx(styles.card, styles.recovered)}
-        >
-          <CardContent>
-            <Typography color="textSecondary" gutterBottom>
-              Recovered
-            </Typography>
-            <Typography variant="h5">
-              {" "}
-              <CountUp
-                start={0}
-                end={fetchedData.recovered.value}
-                duration={3}
-                separator=","
-              />
-            </Typography>
-            <Typography color="textSecondary">
-              {new Date(fetchedData.lastUpdate).toDateString()}
-            </Typography>
-            <Typography variant="body2">Active COVID cases</Typography>
-          </CardContent>
-        </Grid>
-        <Grid
-          item
-          component={Card}
-          xs={12}
-          md={3}
-          className={cx(styles.card, styles.deaths)}
-        >
-          <CardContent>
-            <Typography color="textSecondary" gutterBottom>
-              Deaths
-            </Typography>
-            <Typography variant="h5">
-              {" "}
-              <CountUp
-                start={0}
-                end={fetchedData.deaths.value}
-                duration={3}
-                separator=","
-              />
-            </Typography>
-            <Typography color="textSecondary">
-              {new Date(fetchedData.lastUpdate).toDateString()}
-            </Typography>
-            <Typography variant="body2">Active COVID cases</Typography>
-          </CardContent>
-        </Grid>
+        <CardCompenent
+          className={styles.infected}
+          title="Infected"
+          value={fetchedData.confirmed.value}
+          lastUpdate={fetchedData.lastUpdate}
+          subtitle="Total cases from COVID-19."
+        />
+        <CardCompenent
+          className={styles.recovered}
+          title="Recovered"
+          value={fetchedData.recovered.value}
+          lastUpdate={fetchedData.lastUpdate}
+          subtitle="Recoveries from COVID-19."
+        />
+        <CardCompenent
+          className={styles.deaths}
+          title="Deaths"
+          value={fetchedData.deaths.value}
+          lastUpdate={fetchedData.lastUpdate}
+          subtitle="Deaths from COVID-19."
+        />
+        <CardCompenent
+          className={styles.active}
+          title="Active Cases"
+          value={activeValue}
+          lastUpdate={fetchedData.lastUpdate}
+          subtitle="Active cases from COVID-19."
+        />
       </Grid>
     </div>
   );

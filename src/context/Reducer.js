@@ -1,5 +1,10 @@
 export default (state, action) => {
   switch (action.type) {
+    case "CHANGE_COUNTRY":
+      return {
+        ...state,
+        country: action.payload,
+      };
     case "FETCH_DATA":
       return {
         ...state,
