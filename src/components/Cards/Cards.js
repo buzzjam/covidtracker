@@ -1,11 +1,9 @@
 import React, { useContext, useEffect } from "react";
 import { GlobalContext } from "../../context/GlobalState";
-import CountUp from "react-countup";
-import { Card, CardContent, Typography, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import styles from "./Cards.module.css";
 import { css } from "@emotion/core";
 import PuffLoader from "react-spinners/PuffLoader";
-import cx from "classnames";
 import CardCompenent from "./CardCompenent";
 
 const override = css`
